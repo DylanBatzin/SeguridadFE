@@ -1,0 +1,23 @@
+{% extends './base.html' %}
+
+{% block title %}Token Verification{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='ccs/styletoke.css') }}">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    <!-- Formulario para generar token -->
+    <form class="form-signin" action="/generate_token" method="POST">
+        <h1>Token Verification</h1>
+        <p>Selecciona el método de Verificación:</p>
+        <div class="token-method">
+            <!-- Cambia los botones a submit y pasa el valor a través de un campo oculto -->
+            <button type="submit" name="token_type" value="SMS" class="btn-select">SMS</button>
+            <button type="submit" name="token_type" value="EMAIL" class="btn-select">Email</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

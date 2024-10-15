@@ -1,0 +1,21 @@
+{% extends './base.html' %}
+
+{% block title %}Token Verification{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='ccs/validartok.css') }}">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    <form class="form-signin" action="/validate_token" method="POST" style="margin-top: 20px;" id="token-form">
+        <h2>Ingrese su token</h2>
+        <div class="input-box">
+            <input type="text" class="form-control" id="token" name="token" placeholder="token" required>
+            <i class='bx bxs-user'></i>
+          </div>
+        <button type="submit" class="btn" id="validate-btn">Validar</button>
+    </form>
+</div>
+{% endblock %}

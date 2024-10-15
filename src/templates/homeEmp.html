@@ -1,0 +1,35 @@
+{% extends './base.html' %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='ccs/stylehome.css') }}">
+<!-- Include Boxicons -->
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    <!-- Welcome message with user's name -->
+    <div class="welcome-box">
+        <h1>Bienvenido, {% if nombre %}{{ nombre }}{% else %}Empleado{% endif %}!</h1>
+    </div>
+
+    <!-- Info section about credit limit and balance -->
+    <div class="info-box">
+        <h2>Tu crédito es de: </h2>
+        <p>Crédito Límite: <strong>{% if creditolim %}{{ creditolim }}{% else %}Q0{% endif %}</strong></p>
+        <p>Crédito Disponible: <strong>{% if credito %}{{ credito }}{% else %}Q0{% endif %}</strong></p>
+    </div>
+
+    <!-- Placeholder for purchase actions -->
+    <div class="purchase-box">
+        <button class="btn">Iniciar a Comprar</button>
+    </div>
+
+    <!-- Logout button -->
+    <div class="logout-box">
+        <a href="{{ url_for('logout') }}" class="btn">Cerrar sesión</a>
+    </div>
+</div>
+{% endblock %}
