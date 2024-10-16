@@ -1,0 +1,38 @@
+{% extends './base.html' %}
+
+{% block title %}Productos{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='ccs/styletablas.css') }}">
+<!-- Include Boxicons -->
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<!-- Include Bootstrap CSS if not already included -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css">
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+  <form class="form-signin" action="/productos" method="POST">
+    <!-- Flask Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            <strong>{{ message }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <!-- Aquí se renderiza la tabla HTML generada desde el servidor -->
+    <div>
+      {{ html_table|safe }}
+    </div>
+    
+  </form>
+  <div class="logout-box">
+    <a href="{{ url_for('home') }}" class="btn">salir</a>
+</div>
+</div>
+{% endblock %}

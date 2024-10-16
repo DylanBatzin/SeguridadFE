@@ -1,0 +1,86 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url('../img/bg.jpg') no-repeat center center;
+    background-size: cover;
+    background-position: center;
+}
+
+.wrapper {
+    width: auto; /* Eliminar el ancho fijo */
+    max-width: 90%; /* Asegurar que no sea demasiado ancho en pantallas grandes */
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, .2);
+    backdrop-filter: blur(9px);
+    color: #fff;
+    border-radius: 12px;
+    padding: 30px 40px;
+    margin: 20px; /* Añadir margen para que no toque los bordes de la pantalla */
+}
+
+h1 {
+    font-size: 36px;
+    text-align: center;
+}
+
+/* Estilo para la tabla con fondo transparente y desenfoque */
+.custom-table {
+    width: 100%;
+    margin: 0 auto; /* Centrando la tabla */
+    background: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    overflow-x: auto; /* Permitir desplazamiento horizontal si es necesario */
+}
+
+.custom-table th,
+.custom-table td {
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+.custom-table th {
+    font-size: 18px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.15); /* Un poco más opaco para el encabezado */
+}
+
+.custom-table td {
+    font-size: 16px;
+}
+
+.custom-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Efecto hover */
+}
+
+/* Asegurar que la tabla no desborde y se mantenga el contenido dentro */
+.table-container {
+    width: 100%;
+    max-width: 1200px; /* Controlar el ancho máximo */
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.1); /* Fondo dinámico y transparente */
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(9px); /* Desenfoque */
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.2); /* Sombra suave */
+    overflow-x: auto; /* Si es necesario, añade un scroll horizontal */
+}
+
+.table-container .custom-table {
+    width: 100%; /* Asegura que la tabla ocupe el 100% del contenedor */
+}

@@ -36,7 +36,7 @@ def obtener_datos_home(dpi):
         cur = conn.cursor()
 
         # Consulta para obtener los datos del empleado según el DPI
-        query = "SELECT FirstName, CreditLimit, AvailableBalance FROM Employees WHERE dpi = ?"
+        query = "SELECT FirstName, CreditLimit, AvailableBalance, UserType FROM Employees WHERE dpi = ?"
         cur.execute(query, (dpi,))
         
         row = cur.fetchone()
@@ -46,7 +46,8 @@ def obtener_datos_home(dpi):
             return {
                 'FirstName': row[0],  
                 'CreditLimit': row[1],     
-                'AvailableBalance': row[2]         
+                'AvailableBalance': row[2] ,
+                'UserType' :  row[3].strip().upper()          
             }
         else:
             return None  # Si no se encuentra el empleado
@@ -56,6 +57,37 @@ def obtener_datos_home(dpi):
         return None
     finally:
         conn.close()
+
+def obtener_medicamentos():
+    try:
+        conn = conectar_a_bd()
+        cur = conn.cursor()
+
+        # Consulta para obtener todos los productos
+        query = "SELECT ProductID, ProductName, Description, Price, Stock, Category FROM Products"
+        cur.execute(query)
+        
+        rows = cur.fetchall()
+
+        productos = []
+        for row in rows:
+            productos.append({
+                'ProductID': row[0],
+                'ProductName': row[1],
+                'Description': row[2],
+                'Price': row[3],
+                'Stock': row[4],
+                'Category': row[5]
+            })
+        
+        return productos
+
+    except mariadb.Error as e:
+        print(f"Error al realizar la consulta: {e}")
+        return []
+    finally:
+        conn.close()
+
 
 def obtener_datos_usuario(dpi):
     try:

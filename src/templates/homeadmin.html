@@ -1,0 +1,44 @@
+{% extends './base.html' %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='ccs/stylehome.css') }}">
+<!-- Include Boxicons -->
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    <div class="button-grid">
+        <!-- Botón para agregar empleado -->
+        <a href="" class="btn">
+            <i class='bx bx-user-plus'></i> Agregar Empleado
+        </a>
+
+        <!-- Botón para ver empleados -->
+        <a href="" class="btn">
+            <i class='bx bx-user'></i> Ver Empleados
+        </a>
+
+        <!-- Botón para ver el catálogo de productos -->
+        <a href="{{ url_for('productos') }}" class="btn">
+            <i class='bx bx-store'></i> Catálogo de Productos
+        </a>
+        
+
+        <!-- Botón para agregar productos -->
+        <a href="" class="btn">
+            <i class='bx bx-box'></i> Agregar Productos
+        </a>
+
+        <!-- Botón para ver la auditoría -->
+        <a href="" class="btn">
+            <i class='bx bx-clipboard'></i> Ver Auditoría
+        </a>
+    </div>
+    <div class="logout-box">
+        <a href="{{ url_for('logout') }}" class="btn">Cerrar sesión</a>
+    </div>
+</div>
+{% endblock %}

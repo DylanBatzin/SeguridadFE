@@ -1,6 +1,6 @@
 from flask import * 
 from config import config  # Importa el diccionario de configuración
-from database.OperacionesBD import validar_login, obtener_datos_usuario, generar_token, validar_token, obtener_datos_home
+from database.OperacionesBD import validar_login, obtener_datos_usuario, generar_token, validar_token, obtener_datos_home, obtener_medicamentos
 from jwt_auth import jwt, init_jwt  # Importa jwt y la función de inicialización
 from flask_jwt_extended import (
     create_access_token, jwt_required, get_jwt_identity,
@@ -109,16 +109,27 @@ def home():
         nombre = user_data.get('FirstName')
         creditolim = user_data.get('CreditLimit')
         credito = user_data.get('AvailableBalance')
+        rol = user_data.get('UserType')
     else:
         # Handle the case where no data is found
         nombre = None
         creditolim = None
         credito = None
+        rol = None
         flash("No se encontraron datos para el usuario.", "danger")
         # Optionally, you can redirect the user to another page
-        # return redirect(url_for('login'))
+        return redirect(url_for('login'))
     
-    return render_template('homeEmp.html', nombre=nombre, creditolim=creditolim, credito=credito)
+    # Redirigir a la plantilla correcta según el rol del usuario
+    if rol == 'ADMIN':
+        return render_template('homeAdmin.html')
+    elif rol == 'STAFF':
+        return render_template('homeEmp.html', nombre=nombre, creditolim=creditolim, credito=credito)
+    else:
+        # Si el rol no coincide con ninguno, se puede manejar un rol por defecto o mostrar un mensaje
+        flash("Rol no autorizado.", "danger")
+        return redirect(url_for('login'))
+
 
 
 @app.route('/logout')
@@ -127,6 +138,42 @@ def logout():
     unset_jwt_cookies(resp)
     flash("Has cerrado sesión.", "success")
     return resp
+
+@app.route('/productos', methods=['GET', 'POST'])
+@jwt_required()
+def productos():
+    # Traer productos de la base de datos
+    productos = obtener_medicamentos()
+
+    if request.method == 'GET':
+        # Generar tabla HTML con los productos
+        if productos:
+            html_table = "<table class='table table-dark'>"
+            html_table += "<tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Stock</th><th>Categoría</th><th>Acciones</th></tr>"
+            for producto in productos:
+                html_table += f"<tr><td>{producto['ProductID']}</td><td>{producto['ProductName']}</td><td>{producto['Description']}</td><td>{producto['Price']}</td><td>{producto['Stock']}</td><td>{producto['Category']}</td><td>"
+                html_table += f"<form action='/productos' method='POST' style='display:inline;'>"
+                html_table += f"<button class='btn btn-outline-secondary' type='submit' name='editar' value='{producto['ProductID']}'>Editar</button>"
+                html_table += f"</form>"
+                html_table += f"<form action='/productos' method='POST' style='display:inline;'>"
+                html_table += f"<button class='btn btn-outline-danger' type='submit' name='eliminar' value='{producto['ProductID']}'>Eliminar</button>"
+                html_table += f"</form></td></tr>"
+            html_table += "</table>"
+        else:
+            html_table = "<p>No se encontraron productos.</p>"
+
+        return render_template('tablas.html', html_table=html_table)
+
+    elif request.method == 'POST':
+        if 'editar' in request.form:
+            product_id = request.form['editar']
+            return redirect(url_for('productos', product_id=product_id))
+
+        # Manejo de eliminación
+        elif 'eliminar' in request.form:
+            product_id = request.form['eliminar']
+            return redirect(url_for('productos')) 
+
 
 def enviar_sms(telefono, token_value):
     # Simulación del envío de SMS   
