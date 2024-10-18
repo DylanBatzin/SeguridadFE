@@ -1,6 +1,7 @@
 import mariadb
 from werkzeug.security import check_password_hash
 from database.ConexionDB import conectar_a_bd  
+from werkzeug.security import generate_password_hash
 
 def validar_login(dpi, password):
     try:
@@ -188,5 +189,35 @@ def validar_token(dpi, token_value):
     except mariadb.Error as e:
         print(f"Error al validar el token: {e}")
         return False
+    finally:
+        conn.close()
+
+def insertar_empleado(dpi, first_name, last_name, email, phone_number, password, credit_limit, available_balance, user_type='STAFF'):
+    try:
+        conn = conectar_a_bd()
+        cur = conn.cursor()
+
+        # Generar el hash de la contraseña
+        hashed_password = generate_password_hash(password)
+
+        # Consulta de inserción
+        query = """
+            INSERT INTO Employees (DPI, FirstName, LastName, Email, PhoneNumber, PasswordHash, CreditLimit, AvailableBalance, UserType)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """
+
+        # Ejecutar la consulta con los valores proporcionados
+        cur.execute(query, (dpi, first_name, last_name, email, phone_number, hashed_password, credit_limit, available_balance, user_type))
+
+        # Guardar los cambios en la base de datos
+        conn.commit()
+
+        print("Empleado insertado correctamente.")
+        return True  # Retornar True si la inserción fue exitosa
+
+    except mariadb.Error as e:
+        print(f"Error al insertar el empleado: {e}")
+        return False  # Retornar False si ocurrió algún error
+
     finally:
         conn.close()

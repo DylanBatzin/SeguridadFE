@@ -1,0 +1,33 @@
+{% extends './base.html' %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='ccs/forms.css') }}">
+<!-- Include Boxicons -->
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    <h2 class="form-title">Add Employee</h2>
+    <!-- Aquí se inserta el formulario dinámico -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container mt-4">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  
+    {{ html_form|safe }}
+    <div class="logout-box">
+        <a href="{{ url_for('home') }}" class="btn">salir</a>
+    </div>
+</div>
+{% endblock %}

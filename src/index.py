@@ -1,11 +1,12 @@
 from flask import * 
 from config import config  # Importa el diccionario de configuración
-from database.OperacionesBD import validar_login, obtener_datos_usuario, generar_token, validar_token, obtener_datos_home, obtener_medicamentos
+from database.OperacionesBD import validar_login, obtener_datos_usuario, generar_token, validar_token, obtener_datos_home, obtener_medicamentos, insertar_empleado
 from jwt_auth import jwt, init_jwt  # Importa jwt y la función de inicialización
 from flask_jwt_extended import (
     create_access_token, jwt_required, get_jwt_identity,
     set_access_cookies, unset_jwt_cookies
 )
+from validardpi import validar_dpi
 
 app = Flask(__name__)
 
@@ -173,6 +174,107 @@ def productos():
         elif 'eliminar' in request.form:
             product_id = request.form['eliminar']
             return redirect(url_for('productos')) 
+
+
+
+@app.route('/addempleado', methods=['GET', 'POST'])
+def addempleado():
+    if request.method == 'GET':
+        # Generar el formulario HTML dinámicamente
+        html_form = """
+        <form action="/addempleado" method="POST">
+            <div class="form-group">
+                <label for="dpi">DPI</label>
+                <input type="text" id="dpi" name="DPI" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="firstname">First Name</label>
+                <input type="text" id="firstname" name="FirstName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="lastname">Last Name</label>
+                <input type="text" id="lastname" name="LastName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="Email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="phonenumber">Phone Number</label>
+                <input type="text" id="phonenumber" name="PhoneNumber" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="PasswordHash" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="ConfirmPassword" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="creditlimit">Credit Limit</label>
+                <input type="number" step="0.01" id="creditlimit" name="CreditLimit" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="availablebalance">Available Balance</label>
+                <input type="number" step="0.01" id="availablebalance" name="AvailableBalance" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="usertype">User Type</label>
+                <select id="usertype" name="UserType" class="form-control" required>
+                    <option value="STAFF">Staff</option>
+                    <option value="ADMIN">Admin</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+        """
+        return render_template('forms.html', html_form=html_form)
+
+    elif request.method == 'POST':
+        # Obtener datos del formulario
+        dpi = request.form['DPI']
+        first_name = request.form['FirstName']
+        last_name = request.form['LastName']
+        email = request.form['Email']
+        phone_number = request.form['PhoneNumber']
+        password = request.form['Password']
+        confirm_password = request.form['ConfirmPassword']  # Obtener la confirmación de la contraseña
+        credit_limit = float(request.form['CreditLimit'])
+        available_balance = float(request.form['AvailableBalance'])
+        user_type = request.form['UserType']
+
+        # Validar DPI
+        if not validar_dpi(dpi):
+            flash('DPI inválido. Por favor, verifica el DPI e inténtalo de nuevo.', 'danger')
+            return redirect(url_for('addempleado'))
+
+        # Validar que las contraseñas coincidan
+        if password != confirm_password:
+            flash('Las contraseñas no coinciden. Por favor, verifica e inténtalo de nuevo.', 'danger')
+            return redirect(url_for('addempleado'))
+
+        # Validar longitud mínima de la contraseña
+        if len(password) < 8:
+            flash('La contraseña debe tener al menos 8 caracteres.', 'danger')
+            return redirect(url_for('addempleado'))
+
+        # Validación adicional (opcional): Puedes agregar reglas para que la contraseña tenga al menos un número, una letra mayúscula, etc.
+        import re
+        if not re.search(r'[A-Z]', password) or not re.search(r'[a-z]', password) or not re.search(r'[0-9]', password):
+            flash('La contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número.', 'danger')
+            return redirect(url_for('addempleado'))
+
+        # Llamar a la función para insertar al empleado
+        resultado = insertar_empleado(dpi, first_name, last_name, email, phone_number, password, credit_limit, available_balance, user_type)
+
+        if resultado:
+            flash('Empleado añadido exitosamente.', 'success')
+        else:
+            flash('Error al añadir el empleado.', 'danger')
+
+        return redirect(url_for('addempleado'))
+
 
 
 def enviar_sms(telefono, token_value):
