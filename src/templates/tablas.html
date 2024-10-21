@@ -12,7 +12,6 @@
 
 {% block body %}
 <div class="wrapper">
-  <form class="form-signin" action="/productos" method="POST">
     <!-- Flask Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -29,7 +28,6 @@
       {{ html_table|safe }}
     </div>
     
-  </form>
   <div class="logout-box">
     <a href="{{ url_for('home') }}" class="btn">salir</a>
 </div>

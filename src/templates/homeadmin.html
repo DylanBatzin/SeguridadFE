@@ -12,12 +12,12 @@
 <div class="wrapper">
     <div class="button-grid">
         <!-- Botón para agregar empleado -->
-        <a href="" class="btn">
+        <a href="{{ url_for('addempleado') }}" class="btn">
             <i class='bx bx-user-plus'></i> Agregar Empleado
         </a>
 
         <!-- Botón para ver empleados -->
-        <a href="" class="btn">
+        <a href="{{ url_for('verempleado') }}" class="btn">
             <i class='bx bx-user'></i> Ver Empleados
         </a>
 
@@ -28,7 +28,7 @@
         
 
         <!-- Botón para agregar productos -->
-        <a href="" class="btn">
+        <a href="{{ url_for('addproducto') }}" class="btn">
             <i class='bx bx-box'></i> Agregar Productos
         </a>
 
